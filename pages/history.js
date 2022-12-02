@@ -5,23 +5,21 @@ import { ListGroup } from "react-bootstrap"
 import { Button } from "react-bootstrap"
 import styles from "../styles/History.module.css"
 import { Card } from "react-bootstrap"
+import { removeFromHistory } from "../lib/userData"
 
 const History = () => {
     const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom)
     let parsedHistory = []
     const router = useRouter()
+    if(!searchHistory) return null;
 
     function historyClicked(e, index) {
         router.push(`/artwork?${searchHistory[index]}`)
     }
 
-    function removeHistoryClicked(e, index) {
+    async function removeHistoryClicked(e, index) {
         e.stopPropagation();
-        setSearchHistory(curr => {
-            let x = [...curr]
-            x.splice(index, 1)
-            return x
-        })
+        setSearchHistory(await removeFromHistory(searchHistory[index])) 
     }
     searchHistory.forEach(item => {
         let params = new URLSearchParams(item);

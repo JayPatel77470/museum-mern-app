@@ -3,22 +3,23 @@ import { useState } from 'react';
 import { authenticateUser } from '../lib/authenticate';
 import { useRouter } from 'next/router';
 import { favouritesAtom, searchHistoryAtom } from '../store';
-import { getFavourites, getHistory } from "../lib/userData";
 import { useAtom } from 'jotai';
+import { getFavourites, getHistory } from '../lib/userData';
 
 export default function Login(props) {
 
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [warning, setWarning] = useState('');
+    const router = useRouter();
     const [favouritesList, setFavouritesList] = useAtom(favouritesAtom);
     const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom);
-    const router = useRouter();
 
-    async function updateAtoms() {
-        setFavouritesList(await getFavourites());
-        setSearchHistory(await getHistory());
+    async function updateAtoms(){
+        setFavouritesList(await getFavourites()); 
+        setSearchHistory(await getHistory()); 
     }
+    
 
     async function handleSubmit(e) {
         e.preventDefault();

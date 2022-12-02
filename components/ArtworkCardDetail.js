@@ -4,22 +4,26 @@ import Error from 'next/error'
 import Card from 'react-bootstrap/Card'
 import { favouritesAtom } from '../store'
 import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
+import { addToFavourites, removeFromFavourites } from '../lib/userData'
 
 const ArtworkCardDetail = (props) => {
     const [favouritesList, setFavouritesList] = useAtom(favouritesAtom)
-    const [showAdded, setShowAdded] = useState(favouritesList.includes(props.objectID) ? true : false)
+    const [showAdded, setShowAdded] = useState(false)
     const { data, error } = useSWR(props.objectID ? `https://collectionapi.metmuseum.org/public/collection/v1/objects/${props.objectID}` : null)
 
-    function favouritesClicked() {
+    useEffect(()=>{
+        setShowAdded(favouritesList?.includes(props.objectID))
+    }, [favouritesList])
+
+    
+    async function favouritesClicked() {
         if (showAdded) {
-            // setFavouritesList(curr => curr.splice(curr.indexOf(props.objectID, 1)))
-            setFavouritesList(curr => curr.filter(fav =>  fav != props.objectID ))
-            console.log(favouritesList)
+            setFavouritesList(await removeFromFavourites(props.objectID))
             setShowAdded(false)
         } else {
-            setFavouritesList(curr => [...curr, props.objectID])
+            setFavouritesList(await addToFavourites(props.objectID))
             setShowAdded(true)
         }
     }

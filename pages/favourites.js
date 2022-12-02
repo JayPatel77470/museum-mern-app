@@ -4,8 +4,8 @@ import { Row, Col, Card } from "react-bootstrap"
 import ArtworkCard from "../components/ArtworkCard"
 
 const Favourites = () => {
-
     const [favouritesList, setFavouritesList] = useAtom(favouritesAtom)
+    if(!favouritesList) return null;
     return (
         <>
             <Row className="gy-4">
